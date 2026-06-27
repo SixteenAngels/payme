@@ -1,0 +1,19 @@
+{
+  "rewrites": [
+    {
+      "source": "/((?!assets/|manifest.webmanifest|pwa-icon.svg|sw.js|favicon.svg|icons.svg).*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ]
+}

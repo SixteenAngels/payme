@@ -1,0 +1,4 @@
+project_id = "autopay-africa"
+
+[functions.execute-disbursement]
+verify_jwt = true

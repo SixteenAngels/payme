@@ -1,0 +1,32 @@
+import type { OperationRecord } from './hooks/useAutoPayData'
+
+export type View =
+  | 'dashboard'
+  | 'employees'
+  | 'employee-detail'
+  | 'employee-form'
+  | 'payroll'
+  | 'payroll-detail'
+  | 'approval'
+  | 'execute'
+  | 'reports'
+  | 'automation'
+  | 'bulk'
+  | 'vendors'
+  | 'bills'
+  | 'advances'
+  | 'payslips'
+  | 'audit'
+  | 'notifications'
+  | 'profile'
+  | 'settings'
+  | 'wallet'
+  | 'onboarding'
+  | 'team'
+  | 'integrations'
+  | 'tax'
+  | 'reconciliation'
+  | 'self-service'
+
+export type Row = OperationRecord
+export type SetView = (view: View) => void
