@@ -13,9 +13,37 @@ function App() {
   const navigation = useAppNavigation()
 
   useEffect(() => {
-    if ('serviceWorker' in navigator && import.meta.env.PROD) {
-      navigator.serviceWorker.register('/sw.js').catch(() => undefined)
+    if (!('serviceWorker' in navigator) || !import.meta.env.PROD) return
+
+    let hadController = Boolean(navigator.serviceWorker.controller)
+
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then((registration) => {
+        registration.addEventListener('updatefound', () => {
+          const worker = registration.installing
+          if (!worker) return
+
+          worker.addEventListener('statechange', () => {
+            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+              worker.postMessage({ type: 'SKIP_WAITING' })
+            }
+          })
+        })
+      })
+      .catch(() => undefined)
+
+    const reloadOnControllerChange = () => {
+      if (!hadController) {
+        hadController = true
+        return
+      }
+
+      window.location.reload()
     }
+
+    navigator.serviceWorker.addEventListener('controllerchange', reloadOnControllerChange)
+    return () => navigator.serviceWorker.removeEventListener('controllerchange', reloadOnControllerChange)
   }, [])
 
   if (!auth.session) return <AuthPage {...auth} />

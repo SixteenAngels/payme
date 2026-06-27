@@ -21,8 +21,16 @@ export function SummaryLine({ label, value, tone }: { label: string; value: stri
   return <div className="summary-line"><span>{label}</span><strong className={tone}>{value}</strong></div>
 }
 
-export function StatusBanner({ title, copy, tone = 'info' }: { title: string; copy: string; tone?: 'info' | 'warning' }) {
-  return <section className={`status-banner ${tone}`}><strong>{title}</strong><p>{copy}</p></section>
+export function StatusBanner({ title, copy, tone = 'info', loading = false }: { title: string; copy: string; tone?: 'info' | 'warning'; loading?: boolean }) {
+  return (
+    <section className={`status-banner ${tone} ${loading ? 'loading' : ''}`}>
+      {loading && <span className="status-spinner" aria-hidden="true" />}
+      <div>
+        <strong>{title}</strong>
+        <p>{copy}</p>
+      </div>
+    </section>
+  )
 }
 
 export function EmptyState({ title, copy }: { title: string; copy: string }) {

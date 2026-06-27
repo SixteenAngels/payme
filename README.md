@@ -31,7 +31,7 @@ npm run supabase:check
 
 ## Supabase Setup
 
-Copy `.env.example` to `.env` and set:
+Create a `.env` file in the project root and set:
 
 ```bash
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co

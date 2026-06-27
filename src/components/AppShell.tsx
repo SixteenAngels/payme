@@ -35,6 +35,10 @@ export function AppShell({ auth, data, view, setView, children }: AppShellProps)
 
   return (
     <div className="app-shell">
+      {mobileNavOpen && (
+        <button className="sidebar-backdrop" type="button" aria-label="Close menu" onClick={() => setMobileNavOpen(false)} />
+      )}
+
       <aside className={`sidebar ${mobileNavOpen ? 'sidebar-open' : ''}`}>
         <div className="brand-block">
           <button className="mobile-close icon-button" type="button" onClick={() => setMobileNavOpen(false)} aria-label="Close menu">
@@ -91,33 +95,37 @@ export function AppShell({ auth, data, view, setView, children }: AppShellProps)
         </header>
 
         <main className="content" aria-labelledby="page-title">
-          <div className="page-heading">
-            <div>
-              <h2 id="page-title">{getPageTitle(view)}</h2>
-              <p>{getPageSubtitle(view, data.syncState)}</p>
+          <div className="page-transition" key={view}>
+            <div className="page-heading">
+              <div>
+                <h2 id="page-title">{getPageTitle(view)}</h2>
+                <p>{getPageSubtitle(view, data.syncState)}</p>
+              </div>
+              <div className="heading-actions">
+                <button
+                  className="ghost"
+                  type="button"
+                  disabled={!auth.permissions.canExport}
+                  onClick={() => downloadCsv('autopay-export.csv', [...data.employees, ...data.payrollRunRows])}
+                >
+                  <Download size={19} />
+                  Export Data
+                </button>
+                <button className="primary" type="button" disabled={!auth.permissions.canManagePayroll} onClick={() => setView('payroll')}>
+                  <CircleDollarSign size={20} />
+                  Initiate Payroll
+                </button>
+              </div>
             </div>
-            <div className="heading-actions">
-              <button
-                className="ghost"
-                type="button"
-                disabled={!auth.permissions.canExport}
-                onClick={() => downloadCsv('autopay-export.csv', [...data.employees, ...data.payrollRunRows])}
-              >
-                <Download size={19} />
-                Export Data
-              </button>
-              <button className="primary" type="button" disabled={!auth.permissions.canManagePayroll} onClick={() => setView('payroll')}>
-                <CircleDollarSign size={20} />
-                Initiate Payroll
-              </button>
-            </div>
+
+            {data.dataError && <StatusBanner tone="warning" title="Supabase data warning" copy={`${data.dataError} Live records could not be loaded.`} />}
+            {data.dataMessage && <StatusBanner title="Saved" copy={data.dataMessage} />}
+            {data.isDataLoading && (
+              <StatusBanner title="Loading Supabase data" copy="Fetching protected operations records with the active session token." loading />
+            )}
+
+            {children}
           </div>
-
-          {data.dataError && <StatusBanner tone="warning" title="Supabase data warning" copy={`${data.dataError} Live records could not be loaded.`} />}
-          {data.dataMessage && <StatusBanner title="Saved" copy={data.dataMessage} />}
-          {data.isDataLoading && <StatusBanner title="Loading Supabase data" copy="Fetching protected operations records with the active session token." />}
-
-          {children}
         </main>
       </div>
 
